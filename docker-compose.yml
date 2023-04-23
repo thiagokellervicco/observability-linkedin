@@ -1,0 +1,39 @@
+version: '3.8'
+
+networks:
+  aw-network:
+    driver: bridge
+
+volumes:
+  observability-linkedin:
+  prometheus_data:
+  grafana_data:
+
+services:
+  api-linkedin:
+    image: observability-linkedin
+    container_name: 'observability-linkedin'
+    networks:
+      - aw-network
+    ports:
+      - 8080:8080
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: 'prometheus'
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - aw-network
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana:latest
+    container_name: 'grafana'
+    ports:
+      - 3000:3000
+    networks:
+      - aw-network
+
+
+
